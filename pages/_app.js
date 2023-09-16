@@ -4,8 +4,8 @@ import { Stats, OrbitControls } from '@react-three/drei';
 import { Physics, Debug } from '@react-three/cannon';
 import './globals.css';
 import { createContext } from 'react';
-import DatGui, { DatButton } from 'react-dat-gui';
 import Lights from '../components/Lights';
+import { useControls, button } from 'leva';
 
 const CanvasContext = createContext(null);
 
@@ -52,11 +52,16 @@ export default function App({ Component, pageProps }) {
     });
   }  
 
+  useControls({ 
+    "add spheres": button(() => {
+      addSpheres();
+    }),
+ });
+
   return (
     <CanvasContext.Provider value={{state, setState}}>
-      <DatGui data={state} >
-        <DatButton label="add spheres" onClick={addSpheres}/>
-      </DatGui>
+      {/* dat gui */}
+      {/* dat */}
       <Canvas
         shadows
         camera={{
@@ -68,7 +73,7 @@ export default function App({ Component, pageProps }) {
       >
         <Suspense fallback={null}>
           <OrbitControls />
-          {/* <Stats /> */}
+          <Stats />
           <Lights />
           <Physics 
             allowSleep

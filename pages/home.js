@@ -76,7 +76,7 @@ function Plane(props) {
       rotation={rotation}
       receiveShadow
     >
-      <planeGeometry args={[10, 10]} />
+      <planeGeometry args={[5, 5]} />
       <meshStandardMaterial {...material} />
     </mesh>
   )
@@ -182,8 +182,8 @@ function getRandomArbitrary(min, max) {
 
 function Walls(props) {
   let material = null;
-  material = getMaterial('bricks');
-  const scale = [10, 1, 0.1];
+  material = getMaterial('wall');
+  const scale = [5, 1, 0.1];
   const positions = [];
 
   positions[0] = { 
@@ -234,13 +234,13 @@ function Box(props) {
     type: 'Static',
   }));
 
-  material.map.repeat.set(20, 3);
-  material.map.wrapS = THREE.MirroredRepeatWrapping;
-  material.map.wrapT = THREE.MirroredRepeatWrapping;
+  material.map.repeat.set(3, 3);
+  material.map.wrapS = THREE.RepeatWrapping;
+  material.map.wrapT = THREE.RepeatWrapping;
 
   return (
     <>
-      <mesh ref={ref} scale={scale} >
+      <mesh ref={ref} scale={scale} castShadow >
         <boxGeometry />
         <meshStandardMaterial {...material} />
       </mesh>
