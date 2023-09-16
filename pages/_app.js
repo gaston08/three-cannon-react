@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stats, OrbitControls } from '@react-three/drei';
-import { Physics } from '@react-three/cannon';
+import { Physics, Debug } from '@react-three/cannon';
 import './globals.css';
 import { createContext } from 'react';
 import DatGui, { DatButton } from 'react-dat-gui';
@@ -13,16 +13,25 @@ function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+const MATERIAL_BALLS_COUNT = 3;
+
 export default function App({ Component, pageProps }) {
 
+  useEffect(() => {
+    console.clear();
+  }, []);
+
   const [state, setState] = useState({
-    spheres: []
+    spheres: [],
+    materials: [],
+    hitSound: undefined,
   });
 
   const addSpheres = () => {
     setState(prev => {
       let newSpheres = [...prev.spheres];
 
+      const materialIndex = Math.floor(Math.random() * MATERIAL_BALLS_COUNT);
       const scale = getRandomArbitrary(0.1, 0.3);
       const position = [
         getRandomArbitrary(-1, 1),
@@ -33,6 +42,7 @@ export default function App({ Component, pageProps }) {
       newSpheres.push({
         scale,
         position,
+        materialIndex,
       });
 
       return {
@@ -50,18 +60,30 @@ export default function App({ Component, pageProps }) {
       <Canvas
         shadows
         camera={{
-          fov: 45,
+          fov: 75,
           near: 0.1,
           far: 200,
-          position: [ 2.5, 4, 6 ]
+          position: [1.5, 1.5, 0]
         }}
       >
-        <OrbitControls />
-        {/* <Stats /> */}
-        <Lights />
-        <Physics>
-          <Component {...pageProps} />
-        </Physics>
+        <Suspense fallback={null}>
+          <OrbitControls />
+          <Stats />
+          <Lights />
+          <Physics 
+            allowSleep
+            gravity={[0, -9.82, 0]}
+            broadphase='SAP'
+            defaultContactMaterial={{
+              friction: 0.1,
+              restitution: 0.7
+            }}
+          >
+            {/* <Debug color="black" scale={1.1}> */}
+              <Component {...pageProps} />
+            {/* </Debug> */}
+          </Physics>
+        </Suspense>
       </Canvas>
     </CanvasContext.Provider>
   );
