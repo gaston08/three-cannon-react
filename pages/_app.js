@@ -68,7 +68,7 @@ export default function App({ Component, pageProps }) {
       >
         <Suspense fallback={null}>
           <OrbitControls />
-          <Stats />
+          {/* <Stats /> */}
           <Lights />
           <Physics 
             allowSleep

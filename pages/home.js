@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useEffect, useState } from 'react';
 import { CanvasContext } from './_app';
-import { usePlane, useSphere } from '@react-three/cannon';
+import { usePlane, useSphere, useBox } from '@react-three/cannon';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import * as THREE from 'three';
@@ -47,6 +47,7 @@ export default function Home() {
     <>
       {/* <gridHelper args={[10, 10]} /> */}
       <Plane position={[0, 0, 0]} />
+      <Walls />
       <>
         {
           state.spheres.map((sphere, i) => {
@@ -177,4 +178,72 @@ function playSound(collision, hitSound) {
 
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
+}
+
+function Walls(props) {
+  let material = null;
+  material = getMaterial('bricks');
+  const scale = [10, 1, 0.1];
+  const positions = [];
+
+  positions[0] = { 
+    translation: [0, scale[1]/2, scale[0]/2],
+    rotation: [0, 0, 0]
+  };
+
+  positions[1] = { translation:
+    [0, scale[1]/2, -scale[0]/2],
+    rotation: [0, 0, 0]
+  };
+
+  positions[2] = { 
+    translation: [-scale[0] /2, scale[1]/2, 0],
+    rotation: [0, Math.PI / 2, 0],
+  }
+
+  positions[3] = {
+    translation: [scale[0] /2, scale[1]/2, 0],
+    rotation: [0, Math.PI / 2, 0]
+  }
+
+  return material && (
+    <>
+      {
+        positions.map((position, i) => {
+          return (
+            <Box
+              key={i}
+              {...position}
+              scale={scale}
+              material={material}
+            />
+          )
+        })
+      }
+    </>
+  );
+}
+
+function Box(props) {
+  const { translation, rotation, scale, material } = props;
+
+  const [ref] = useBox(() => ({ 
+    args: [scale[0], scale[1], scale[2]],
+    position: translation,
+    rotation,
+    type: 'Static',
+  }));
+
+  material.map.repeat.set(20, 3);
+  material.map.wrapS = THREE.MirroredRepeatWrapping;
+  material.map.wrapT = THREE.MirroredRepeatWrapping;
+
+  return (
+    <>
+      <mesh ref={ref} scale={scale} >
+        <boxGeometry />
+        <meshStandardMaterial {...material} />
+      </mesh>
+    </>
+  );
 }
