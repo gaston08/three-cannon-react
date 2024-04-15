@@ -3,7 +3,7 @@
 Generate random balls using three.js and cannon-es.js
 
 ### Build with
-- [React](https://react.dev/) + [Typescript](https://www.typescriptlang.org/)
+- [React](https://react.dev/)
 - [React three fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction)
 - [Next.js](https://nextjs.org/)
 - [Cannon-es](https://github.com/pmndrs/cannon-es)
